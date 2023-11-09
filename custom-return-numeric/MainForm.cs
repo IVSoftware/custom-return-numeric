@@ -4,10 +4,7 @@ namespace custom_return_numeric
 {
     public partial class MainForm : Form
     {
-        public MainForm()
-        {
-            InitializeComponent();
-        }
+        public MainForm() =>InitializeComponent();
     }
     class NumericUpDownEx : NumericUpDown
     {
@@ -22,8 +19,10 @@ namespace custom_return_numeric
                     {
                         if (Value < 0 || Value > 10)
                         {
-                            MessageBox.Show($"Error: '{Value}' is not legal.");
+                            var message = $"Error: '{Value}' is not legal.";
                             Value = 1;
+                            MessageBox.Show(message);
+                            Focus();
                         }
                         var length = Value.ToString().Length;
                         if (length > 0)
@@ -34,7 +33,15 @@ namespace custom_return_numeric
                     break;
             }
         }
-        protected override void OnLostFocus(EventArgs e) => 
+        /// <summary>
+        ///  The Validating event doesn't always fire when we 
+        ///  want it to, especially if this is the only control.
+        ///  Do this instead;
+        /// </summary>
+        protected override void OnLostFocus(EventArgs e)
+        {
+            base.OnLostFocus(e); 
             OnKeyDown(new KeyEventArgs(Keys.Enter));
+        }
     }
 }
